@@ -7,9 +7,7 @@
 #include <stdbool.h>
 #include <stdarg.h>
 
-/* =========================
-   String builder
-   ========================= */
+/* String builder */
 
 typedef struct {
     char* data;
@@ -60,9 +58,7 @@ static char* dupstr(const char* s) {
     return p;
 }
 
-/* =========================
-   Types + symboles (pour READ + init)
-   ========================= */
+/* Types + symboles (pour READ + init) */
 
 typedef enum { PT_UNKNOWN, PT_INT, PT_FLOAT, PT_BOOL, PT_CHAR, PT_STRING, PT_STRUCT, PT_ARRAY } PTypeKind;
 
@@ -128,9 +124,7 @@ static void symtab_free(SymTab* st) {
     st->count = st->cap = 0;
 }
 
-/* =========================
-   Générateur Python
-   ========================= */
+/* Générateur Python */
 
 typedef struct {
     Str out;
@@ -148,7 +142,7 @@ typedef struct {
     SymTab* scopes;
     int scope_count;
 
-    int tmp_id; /* pour noms temporaires uniques */
+    int tmp_id; /* noms temporaires uniques */
 
 } PG;
 
@@ -196,9 +190,7 @@ static PType* lookup_struct_field(PG* pg, const char* struct_name, const char* f
     return NULL;
 }
 
-/* =========================
-   AST -> PType
-   ========================= */
+/* AST -> PType */
 
 static PType* ast_to_ptype(ASTNode* t) {
     if (!t) return pt_new(PT_UNKNOWN);
@@ -230,9 +222,7 @@ static PType* ast_to_ptype(ASTNode* t) {
     return pt_new(PT_UNKNOWN);
 }
 
-/* =========================
-   Inférence expr (pour READ)
-   ========================= */
+/* Inférence expr (pour READ) */
 
 static PType* infer_expr(PG* pg, ASTNode* e) {
     if (!e) return pt_new(PT_UNKNOWN);
@@ -303,9 +293,7 @@ static PType* infer_expr(PG* pg, ASTNode* e) {
     }
 }
 
-/* =========================
-   Expressions Python
-   ========================= */
+/* Expressions Python */
 
 static void emit_expr(PG* pg, ASTNode* e);
 
@@ -400,9 +388,7 @@ static void emit_expr(PG* pg, ASTNode* e) {
     }
 }
 
-/* =========================
-   Valeur par défaut Python
-   ========================= */
+/* Valeur par défaut Python */
 
 static void emit_default_value(PG* pg, PType* t) {
     if (!t) { str_append(&pg->out, "None"); return; }
@@ -422,9 +408,7 @@ static void emit_default_value(PG* pg, PType* t) {
     }
 }
 
-/* =========================
-   Init tableaux (list comprehensions), sans helper
-   ========================= */
+/* Init tableaux (list comprehensions), sans helper */
 
 static void emit_array_init_expr(PG* pg, PType* elem_type, ASTNode** dims, int dim_count) {
     /* génère une expression du type:
@@ -450,7 +434,6 @@ static void emit_array_init_expr(PG* pg, PType* elem_type, ASTNode** dims, int d
         return;
     }
 
-    /* inner expression */
     emit_array_init_expr(pg, elem_type, dims + 1, dim_count - 1);
     str_append(&pg->out, " for ");
     str_append(&pg->out, idx);
@@ -459,9 +442,7 @@ static void emit_array_init_expr(PG* pg, PType* elem_type, ASTNode** dims, int d
     str_append(&pg->out, "))]");
 }
 
-/* =========================
-   Déclarations
-   ========================= */
+/* Déclarations */
 
 static void emit_decl(PG* pg, ASTNode* d, bool is_global) {
     (void)is_global;
@@ -469,7 +450,6 @@ static void emit_decl(PG* pg, ASTNode* d, bool is_global) {
     if (!d) return;
     const char* name = NULL;
     ASTNode* typeNode = NULL;
-    bool is_const = (d->kind == AST_DECL_CONST);
 
     if (d->kind == AST_DECL_VAR) { name = d->as.decl_var.name; typeNode = d->as.decl_var.type; }
     else if (d->kind == AST_DECL_CONST) { name = d->as.decl_const.name; typeNode = d->as.decl_const.type; }
@@ -478,7 +458,6 @@ static void emit_decl(PG* pg, ASTNode* d, bool is_global) {
 
     PType* t = ast_to_ptype(typeNode);
 
-    /* array wrap */
     if (d->kind == AST_DECL_ARRAY) {
         PType* arr = pt_new(PT_ARRAY);
         arr->elem = t;
@@ -486,7 +465,6 @@ static void emit_decl(PG* pg, ASTNode* d, bool is_global) {
         t = arr;
     }
 
-    /* symbol table (pour READ / infer) */
     symtab_add(&pg->scopes[pg->scope_count - 1], name, t);
 
     emit_indent(pg);
@@ -501,22 +479,18 @@ static void emit_decl(PG* pg, ASTNode* d, bool is_global) {
     }
 
     if (d->kind == AST_DECL_ARRAY) {
-        /* list init */
         emit_array_init_expr(pg, t->elem, d->as.decl_array.dims.items, d->as.decl_array.dims.count);
         str_append(&pg->out, "\n");
         pt_free(t);
         return;
     }
 
-    /* var simple default */
     emit_default_value(pg, t);
     str_append(&pg->out, "\n");
     pt_free(t);
 }
 
-/* =========================
-   Statements / Blocks
-   ========================= */
+/* Statements / Blocks */
 
 static void emit_block(PG* pg, ASTNode* b);
 static void emit_stmt(PG* pg, ASTNode* s);
@@ -530,7 +504,6 @@ static void emit_write(PG* pg, ASTNode* s) {
         return;
     }
 
-    /* pas d'espace entre args (comme concat), sep="" */
     str_append(&pg->out, "print(");
     for (int i = 0; i < s->as.write_stmt.args.count; i++) {
         if (i > 0) str_append(&pg->out, ", ");
@@ -551,7 +524,6 @@ static void emit_read_one(PG* pg, ASTNode* target) {
     } else if (t->kind == PT_FLOAT) {
         str_append(&pg->out, "float(input())\n");
     } else if (t->kind == PT_BOOL) {
-        /* sans fonction helper: conversion simple true/false/1/0 */
         char tmp[32]; tmp_name(pg, "_s", tmp, sizeof(tmp));
         str_printf(&pg->out,
             "(lambda %s: (%s == \"true\" or %s == \"1\"))((input().strip().lower()))\n",
@@ -566,9 +538,8 @@ static void emit_read_one(PG* pg, ASTNode* target) {
 }
 
 static void emit_switch(PG* pg, ASTNode* s) {
-    /* switch(expr): cases -> if/elif, default -> else */
     char tmpv[32];
-    tmp_name(pg, "_sw", tmpv, sizeof(tmpv));
+    tmp_name(pg, "s", tmpv, sizeof(tmpv));
 
     emit_indent(pg);
     str_printf(&pg->out, "%s = ", tmpv);
@@ -584,7 +555,6 @@ static void emit_switch(PG* pg, ASTNode* s) {
         str_append(&pg->out, first ? "if " : "elif ");
         first = false;
 
-        /* condition: _sw == v1 or _sw == v2 ... */
         for (int j = 0; j < c->as.case_stmt.values.count; j++) {
             if (j > 0) str_append(&pg->out, " or ");
             str_append(&pg->out, tmpv);
@@ -689,24 +659,22 @@ static void emit_stmt(PG* pg, ASTNode* s) {
             break;
 
         case AST_FOR: {
-            /* inclusive end + step positif/négatif */
-            char stepname[32];
-            tmp_name(pg, "_step", stepname, sizeof(stepname));
-
-            emit_indent(pg);
-            str_printf(&pg->out, "%s = ", stepname);
-            if (s->as.for_stmt.step) emit_expr(pg, s->as.for_stmt.step);
-            else str_append(&pg->out, "1");
-            str_append(&pg->out, "\n");
-
             emit_indent(pg);
             str_append(&pg->out, "for ");
             str_append(&pg->out, s->as.for_stmt.var);
             str_append(&pg->out, " in range(");
+
             emit_expr(pg, s->as.for_stmt.start);
-            str_append(&pg->out, ", (");
+
+            str_append(&pg->out, ", ");
             emit_expr(pg, s->as.for_stmt.end);
-            str_printf(&pg->out, " + (1 if %s > 0 else -1)), %s", stepname, stepname);
+            str_append(&pg->out, " + 1");
+
+            if (s->as.for_stmt.step) {
+                str_append(&pg->out, ", ");
+                emit_expr(pg, s->as.for_stmt.step);
+            }
+
             str_append(&pg->out, "):\n");
 
             pg->indent++;
@@ -716,7 +684,6 @@ static void emit_stmt(PG* pg, ASTNode* s) {
         }
 
         case AST_REPEAT:
-            /* répéter body jusqu'à cond  => while True: body; if cond: break */
             emit_indent(pg);
             str_append(&pg->out, "while True:\n");
             pg->indent++;
@@ -755,7 +722,6 @@ static void emit_stmt(PG* pg, ASTNode* s) {
 
 static void emit_block(PG* pg, ASTNode* b) {
     if (!b || b->kind != AST_BLOCK) {
-        /* bloc manquant => pass pour éviter IndentationError */
         emit_indent(pg);
         str_append(&pg->out, "pass\n");
         return;
@@ -769,7 +735,6 @@ static void emit_block(PG* pg, ASTNode* b) {
 
     push_scope(pg);
 
-    /* d'abord declarations (comme Java), pour éviter usage avant assign */
     for (int i = 0; i < b->as.block.stmts.count; i++) {
         ASTNode* st = b->as.block.stmts.items[i];
         if (!st) continue;
@@ -777,7 +742,6 @@ static void emit_block(PG* pg, ASTNode* b) {
             emit_stmt(pg, st);
     }
 
-    /* ensuite le reste */
     for (int i = 0; i < b->as.block.stmts.count; i++) {
         ASTNode* st = b->as.block.stmts.items[i];
         if (!st) continue;
@@ -788,12 +752,9 @@ static void emit_block(PG* pg, ASTNode* b) {
     pop_scope(pg);
 }
 
-/* =========================
-   Pré-déclaration fonctions + structs
-   ========================= */
+/* Pré-déclaration fonctions + structs */
 
 static void predeclare(PG* pg, ASTNode* program) {
-    /* funcs */
     pg->funcs = (void*)calloc((size_t)program->as.program.defs.count, sizeof(*pg->funcs));
     pg->structs = (void*)calloc((size_t)program->as.program.defs.count, sizeof(*pg->structs));
 
@@ -808,11 +769,10 @@ static void predeclare(PG* pg, ASTNode* program) {
         } else if (d->kind == AST_DEF_PROC) {
             int k = pg->func_count++;
             pg->funcs[k].name = dupstr(d->as.def_proc.name);
-            pg->funcs[k].ret = pt_new(PT_UNKNOWN); /* void-like */
+            pg->funcs[k].ret = pt_new(PT_UNKNOWN);
         } else if (d->kind == AST_DEF_STRUCT) {
             int sidx = pg->struct_count++;
             pg->structs[sidx].name = dupstr(d->as.def_struct.name);
-            /* fields ajoutés plus tard dans emit_structs */
         }
     }
 }
@@ -832,7 +792,6 @@ static void emit_structs(PG* pg, ASTNode* program) {
         ASTNode* d = program->as.program.defs.items[i];
         if (!d || d->kind != AST_DEF_STRUCT) continue;
 
-        /* retrouver l'index struct */
         int idx = -1;
         for (int k = 0; k < pg->struct_count; k++) {
             if (strcmp(pg->structs[k].name, d->as.def_struct.name) == 0) { idx = k; break; }
@@ -868,9 +827,7 @@ static void emit_structs(PG* pg, ASTNode* program) {
     }
 }
 
-/* =========================
-   Fonctions/Procédures + Main
-   ========================= */
+/* Fonctions/Procédures + Main */
 
 static void emit_funcproc(PG* pg, ASTNode* def) {
     bool isFunc = (def->kind == AST_DEF_FUNC);
@@ -878,7 +835,6 @@ static void emit_funcproc(PG* pg, ASTNode* def) {
     ASTList* params = isFunc ? &def->as.def_func.params : &def->as.def_proc.params;
     ASTNode* body = isFunc ? def->as.def_func.body : def->as.def_proc.body;
 
-    /* reset temporaires pour éviter collisions */
     pg->tmp_id = 0;
 
     emit_indent(pg);
@@ -895,7 +851,6 @@ static void emit_funcproc(PG* pg, ASTNode* def) {
     pg->indent++;
     push_scope(pg);
 
-    /* params dans scope */
     for (int i = 0; i < params->count; i++) {
         ASTNode* p = params->items[i];
         PType* pt = ast_to_ptype(p->as.param.type);
@@ -911,9 +866,7 @@ static void emit_funcproc(PG* pg, ASTNode* def) {
     emit_ln(pg, "");
 }
 
-/* =========================
-   Génération globale
-   ========================= */
+/* Génération globale */
 
 bool pygen_generate(ASTNode* program, const char* output_path) {
     if (!program || program->kind != AST_PROGRAM) return false;
@@ -927,15 +880,12 @@ bool pygen_generate(ASTNode* program, const char* output_path) {
     push_scope(&pg);
     predeclare(&pg, program);
 
-    /* Imports */
     emit_ln(&pg, "# Generated Python code");
     emit_ln(&pg, "import math");
     emit_ln(&pg, "");
 
-    /* Structs */
     emit_structs(&pg, program);
 
-    /* Globales */
     emit_ln(&pg, "# Globales");
     for (int i = 0; i < program->as.program.decls.count; i++) {
         ASTNode* d = program->as.program.decls.items[i];
@@ -944,14 +894,12 @@ bool pygen_generate(ASTNode* program, const char* output_path) {
     }
     emit_ln(&pg, "");
 
-    /* Fonctions / Procédures */
     for (int i = 0; i < program->as.program.defs.count; i++) {
         ASTNode* d = program->as.program.defs.items[i];
         if (!d) continue;
         if (d->kind == AST_DEF_FUNC || d->kind == AST_DEF_PROC) emit_funcproc(&pg, d);
     }
 
-    /* Main correct */
     emit_ln(&pg, "def main():");
     pg.indent++;
     pg.tmp_id = 0;
@@ -972,7 +920,6 @@ bool pygen_generate(ASTNode* program, const char* output_path) {
     fputs(pg.out.data ? pg.out.data : "", f);
     fclose(f);
 
-    /* free */
     str_free(&pg.out);
 
     for (int i = 0; i < pg.struct_count; i++) {

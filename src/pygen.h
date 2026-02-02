@@ -7,4 +7,4 @@
 
 bool pygen_generate(ASTNode *program, const char *output_path);
 
-#endif /* PYGEN_H */
+#endif 

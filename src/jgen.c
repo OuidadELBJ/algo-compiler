@@ -6,9 +6,7 @@
 #include <stdbool.h>
 #include <stdarg.h>
 
-/* =========================
-   Utilitaires chaînes
-   ========================= */
+/* Utilitaires chaînes */
 
 static char* dupstr(const char* s) {
     if (!s) return NULL;
@@ -55,9 +53,7 @@ static void str_printf(Str* s, const char* fmt, ...) {
 
 static void str_free(Str* s) { free(s->data); s->data = NULL; s->len = s->cap = 0; }
 
-/* =========================
-   Types Java + symboles
-   ========================= */
+/* Types Java + symboles */
 
 typedef enum { JT_UNKNOWN, JT_INT, JT_DOUBLE, JT_BOOL, JT_CHAR, JT_STRING, JT_STRUCT, JT_ARRAY } JTypeKind;
 
@@ -123,9 +119,7 @@ static void symtab_free(SymTab* st) {
     st->count = st->cap = 0;
 }
 
-/* =========================
-   Générateur Java
-   ========================= */
+/* Générateur Java */
 
 typedef struct {
     Str out;
@@ -142,7 +136,7 @@ typedef struct {
 
     const char* class_name;
 
-    /* IMPORTANT: compteur pour variables temporaires uniques (Java interdit le shadowing) */
+    /* Compteur pour noms temporaires uniques (Java interdit le shadowing) */
     int tmp_id;
 
     /* Liste des tableaux globaux de structs à initialiser dans static { } */
@@ -157,9 +151,7 @@ typedef struct {
 
 } JG;
 
-/* =========================
-   Helpers indentation / scopes
-   ========================= */
+/* Helpers indentation / scopes */
 
 static void emit_indent(JG* jg) { for (int i = 0; i < jg->indent; i++) str_append(&jg->out, "    "); }
 static void emit_ln(JG* jg, const char* s) { emit_indent(jg); str_append(&jg->out, s); str_append(&jg->out, "\n"); }
@@ -205,9 +197,7 @@ static void tmp_name(JG* jg, const char* prefix, char* buf, size_t n) {
     snprintf(buf, n, "%s%d", prefix, jg->tmp_id++);
 }
 
-/* =========================
-   AST -> Type Java
-   ========================= */
+/* AST -> Type Java */
 
 static JType* ast_to_jtype(ASTNode* t) {
     if (!t) return jt_new(JT_UNKNOWN);
@@ -256,9 +246,7 @@ static void emit_type_java(Str* out, JType* t) {
     }
 }
 
-/* =========================
-   Inférence expr (Lire/Ecrire)
-   ========================= */
+/* Inférence expr (Lire/Ecrire) */
 
 static JType* infer_expr(JG* jg, ASTNode* e) {
     if (!e) return jt_new(JT_UNKNOWN);
@@ -322,9 +310,7 @@ static JType* infer_expr(JG* jg, ASTNode* e) {
     }
 }
 
-/* =========================
-   Expressions Java
-   ========================= */
+/* Expressions Java */
 
 static void emit_expr(JG* jg, ASTNode* e);
 
@@ -424,9 +410,7 @@ static void emit_expr(JG* jg, ASTNode* e) {
     }
 }
 
-/* =========================
-   Init tableaux de structs (Java)
-   ========================= */
+/* Init tableaux de structs (Java) */
 
 static void emit_struct_array_init_loops(JG* jg,
                                         const char* arr_name,
@@ -473,9 +457,7 @@ static void emit_struct_array_init_loops(JG* jg,
     }
 }
 
-/* =========================
-   Statements Java
-   ========================= */
+/* Statements Java */
 
 static void emit_block(JG* jg, ASTNode* b);
 
@@ -608,7 +590,7 @@ static void emit_read_one(JG* jg, ASTNode* target) {
 
     if (t->kind == JT_INT) str_append(&jg->out, "_sc.nextInt()");
     else if (t->kind == JT_DOUBLE) str_append(&jg->out, "_sc.nextDouble()");
-    else if (t->kind == JT_BOOL) str_append(&jg->out, "_sc.nextBoolean()"); /* <-- SANS _readBool */
+    else if (t->kind == JT_BOOL) str_append(&jg->out, "_sc.nextBoolean()"); /* sans _readBool */
     else if (t->kind == JT_CHAR) str_append(&jg->out, "_sc.next().charAt(0)");
     else str_append(&jg->out, "_sc.next()");
 
@@ -805,9 +787,7 @@ static void emit_block(JG* jg, ASTNode* b) {
     str_append(&jg->out, "}\n");
 }
 
-/* =========================
-   Structs / funcs / programme
-   ========================= */
+/* Structs / funcs / programme */
 
 static void predeclare(JG* jg, ASTNode* program) {
     jg->funcs = calloc((size_t)program->as.program.defs.count, sizeof(*jg->funcs));
@@ -977,7 +957,7 @@ bool jgen_generate(ASTNode* program, const char* out_path) {
 
     jg.indent = 1;
 
-    /* helpers Scanner (SANS _readBool) */
+    /* Scanner */
     emit_ln(&jg, "static Scanner _sc = new Scanner(System.in);");
     emit_ln(&jg, "");
 
