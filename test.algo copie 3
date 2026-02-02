@@ -1,0 +1,274 @@
+Algorithme TEST_OK_COMPLET_TOUT
+Objets:
+    // ====== CONSTANTES + VARS GLOBALES + TABLEAUX ======
+    N : Constante entier = 6
+    M : Constante entier = 4
+
+    i : Variable entier
+    j : Variable entier
+    k : Variable entier
+    x : Variable entier
+    y : Variable entier
+    r : Variable réel
+    s : Variable réel
+    ok : Variable booléen
+    msg : Variable chaine
+
+    t : Tableau entier[N]
+    u : Tableau réel[N]
+    mat : Tableau entier[N][M]
+
+    p : Variable Personne
+    tabP : Tableau Personne[N]
+
+Début
+
+    // =====================================================================
+    // 1) STRUCTURES
+    // =====================================================================
+
+    /* Bloc commentaire :
+       - accents
+       - ponctuation
+       - plusieurs lignes
+    */
+    Structure Adresse
+        rue : chaine
+        ville : chaine
+        codePostal : entier
+    Fin-struct
+
+    Structure Personne
+        nom : chaine
+        age : entier
+        estEtudiant : booléen
+        adresse : Adresse
+    Fin-struct
+
+    // =====================================================================
+    // 2) FONCTIONS
+    // =====================================================================
+
+    Fonction Factorielle(n : entier) : entier
+    Objets:
+        res : Variable entier
+    Début
+        Si n <= 1 Alors
+            Retourner 1
+        Sinon
+            res <- n * Factorielle(n - 1)
+            Retourner res
+        FinSi
+    FinFonct
+
+    Fonction Puissance(base : réel, exp : entier) : réel
+    Objets:
+        kk : Variable entier
+        acc : Variable réel
+    Début
+        acc <- 1.0
+        Pour kk <- 1 jusqua exp
+            acc <- acc * base
+        FinPour
+        Retourner acc
+    FinFonct
+
+    Fonction PGCD(a : entier, b : entier) : entier
+    Objets:
+        tmp : Variable entier
+    Début
+        TantQue b <> 0
+            tmp <- b
+            b <- a Mod b
+            a <- tmp
+        FinTantQue
+        Retourner a
+    FinFonct
+
+    Fonction EstPair(v : entier) : booléen
+    Début
+        Retourner (v Mod 2 = 0)
+    FinFonct
+
+    Fonction MoyenneTab(tab : Tableau entier[], taille : entier) : réel
+    Objets:
+        somme : Variable entier
+        ii : Variable entier
+    Début
+        somme <- 0
+        Pour ii <- 0 jusqua taille - 1
+            somme <- somme + tab[ii]
+        FinPour
+        Retourner somme / taille
+    FinFonct
+
+    // =====================================================================
+    // 3) PROCEDURES
+    // =====================================================================
+
+    Procédure RemplirDouble(tin : Tableau entier[], taille : entier)
+    Objets:
+        ii : Variable entier
+    Début
+        Pour ii <- 0 jusqua taille - 1
+            tin[ii] <- ii * 2
+        FinPour
+    FinProc
+
+    Procédure RemplirReels(out : Tableau réel[], taille : entier)
+    Objets:
+        ii : Variable entier
+        base : Variable réel
+    Début
+        base <- .5     // test réel ".5"
+        Pour ii <- 0 jusqua taille - 1
+            out[ii] <- base + ii * 1.25  // test réel avec point
+        FinPour
+    FinProc
+
+    Procédure RemplirMatrice(a : Tableau entier[][ ], n : entier, m : entier)
+    Objets:
+        ii : Variable entier
+        jj : Variable entier
+    Début
+        Pour ii <- 0 jusqua n - 1
+            Pour jj <- 0 jusqua m - 1
+                a[ii][jj] <- ii + jj
+            FinPour
+        FinPour
+    FinProc
+
+    Procédure DemoSelon(val : entier)
+    Début
+        Selon val
+            Cas 0:
+                Ecrire("val=0")
+            Cas 1, 2:
+                Ecrire("val=1 ou 2")
+            Cas 3:
+                Ecrire("val=3")
+            Défaut:
+                Ecrire("val autre")
+        FinSelon
+    FinProc
+
+    Procédure AfficherPersonne(pp : Personne)
+    Début
+        Ecrire("Nom=", pp.nom, " Age=", pp.age, " Etudiant=", pp.estEtudiant)
+        Ecrire("Adr=", pp.adresse.rue, " ", pp.adresse.ville, " ", pp.adresse.codePostal)
+    FinProc
+
+    // =====================================================================
+    // 4) MAIN : TESTS
+    // =====================================================================
+
+    // --- Chaînes + échappements ---
+    msg <- "Début du test complet"
+    Ecrire(msg)
+    Ecrire("Test: guillemets \"ok\" et apostrophe \' ok")
+
+    // --- Booléens + Non/Et/Ou + comparaisons ---
+    x <- 10
+    ok <- (x >= 10) Et Non(x <> 10) Ou Faux
+    Si ok Alors
+        Ecrire("OK: comparaisons + logique")
+    Sinon
+        Ecrire("KO")
+    FinSi
+
+    // --- For + Quitter Pour ---
+    r <- 0.0
+    Pour i <- 0 jusqua N - 1
+        Si i = 4 Alors
+            Quitter Pour
+        FinSi
+        r <- r + i
+    FinPour
+    Ecrire("Somme partielle=", r)
+
+    // --- TantQue + Sortir ---
+    i <- 0
+    TantQue Vrai
+        i <- i + 1
+        Si i = 2 Alors
+            Sortir
+        FinSi
+    FinTantQue
+    Ecrire("i après Sortir=", i)
+
+    // --- Répéter ... TantQue ---
+    j <- 0
+    Répéter
+        j <- j + 1
+    TantQue j < 3
+    Ecrire("j après Répéter=", j)
+
+    // --- Remplissage + affichage tableau 1D ---
+    RemplirDouble(t, N)
+    Ecrire("Tableau t:")
+    Pour i <- 0 jusqua N - 1
+        Ecrire("t[", i, "]=", t[i])
+    FinPour
+
+    // --- Réels + division + virgule token ---
+    RemplirReels(u, N)
+    s <- 0.0
+    Pour i <- 0 jusqua N - 1
+        s <- s + u[i]
+    FinPour
+    Ecrire("Somme u=", s)
+    Ecrire("Moyenne t=", MoyenneTab(t, N))
+
+    // --- Matrice 2D ---
+    RemplirMatrice(mat, N, M)
+    Ecrire("Matrice mat:")
+    Pour i <- 0 jusqua N - 1
+        Pour j <- 0 jusqua M - 1
+            Ecrire("mat[", i, "][", j, "]=", mat[i][j])
+        FinPour
+    FinPour
+
+    // --- Structures + champs imbriqués ---
+    p.nom <- "Ali"
+    p.age <- 20
+    p.estEtudiant <- Vrai
+    p.adresse.rue <- "Rue 1"
+    p.adresse.ville <- "Casa"
+    p.adresse.codePostal <- 20000
+    AfficherPersonne(p)
+
+    // --- Tableau de structures ---
+    Pour i <- 0 jusqua N - 1
+        tabP[i].nom <- "P"
+        tabP[i].age <- 18 + i
+        tabP[i].estEtudiant <- EstPair(i)
+        tabP[i].adresse.ville <- "Ville"
+        tabP[i].adresse.rue <- "Rue"
+        tabP[i].adresse.codePostal <- 10000 + i
+    FinPour
+
+    Ecrire("=== Etudiants dans tabP ===")
+    Pour i <- 0 jusqua N - 1
+        Si tabP[i].estEtudiant Alors
+            Ecrire("-> ", tabP[i].nom, " age=", tabP[i].age, " cp=", tabP[i].adresse.codePostal)
+        FinSi
+    FinPour
+
+    // --- Appels fonctions + opérateurs + parenthèses ---
+    Ecrire("Factorielle(5)=", Factorielle(5))
+    Ecrire("2^8=", Puissance(2.0, 8))
+    Ecrire("PGCD(48,18)=", PGCD(48, 18))
+
+    // --- Selon/Cas/Défaut ---
+    DemoSelon(0)
+    DemoSelon(2)
+    DemoSelon(3)
+    DemoSelon(9)
+
+    // --- Expressions : priorités + unary - ---
+    x <- 2 + 3 * 4 - (5 + 1) * 2
+    Ecrire("x=", x)
+    x <- -x
+    Ecrire("x neg=", x)
+
+Fin

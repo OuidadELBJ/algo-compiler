@@ -1,0 +1,14 @@
+Algorithme TEST_SYNTAX_05_SELON
+Objets:
+    x : Variable entier
+Début
+    x <- 2
+    Selon x
+        Cas 0:
+            Ecrire("zero")
+        Cas 1, 2:
+            Ecrire("un ou deux")
+        Défaut:
+            Ecrire("autre")
+    FinSelon
+Fin

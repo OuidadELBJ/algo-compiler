@@ -1,0 +1,20 @@
+Algorithme TEST_SEM_03_TABLEAU_STRUCT
+Objets:
+    N : Constante entier = 3
+    tab : Tableau Personne[N]
+    i : Variable entier
+Début
+    Structure Personne
+        nom : chaine
+        age : entier
+    Fin-struct
+
+    Pour i <- 0 jusqua N - 1
+        tab[i].nom <- "P"
+        tab[i].age <- 18 + i
+    FinPour
+
+    Pour i <- 0 jusqua N - 1
+        Ecrire(tab[i].nom, " ", tab[i].age)
+    FinPour
+Fin

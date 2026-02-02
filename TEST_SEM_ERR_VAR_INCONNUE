@@ -1,0 +1,7 @@
+Algorithme TEST_SEM_ERR_VAR_INCONNUE
+Objets:
+    a : Variable entier
+Début
+    a <- 1
+    b <- 2
+Fin

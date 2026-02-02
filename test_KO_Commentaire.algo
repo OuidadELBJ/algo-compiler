@@ -1,0 +1,15 @@
+Algorithme TEST_KO_LEXICAL
+Objets:
+    x : Variable entier
+Début
+
+    // 1) Caractère illégal (si ton lexer ne le gère pas)
+    x <- 10 @ 2
+
+    // 2) Chaîne non fermée
+    Ecrire("Bonjour)
+
+    /* 3) Commentaire bloc non fermé
+       encore une ligne...
+
+Fin

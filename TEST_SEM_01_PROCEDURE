@@ -1,0 +1,20 @@
+Algorithme TEST_SEM_01_PROCEDURE
+Objets:
+    N : Constante entier = 4
+    t : Tableau entier[N]
+    i : Variable entier
+Début
+    Procédure Remplir(tin : Tableau entier[], n : entier)
+    Objets:
+        k : Variable entier
+    Début
+        Pour k <- 0 jusqua n - 1
+            tin[k] <- k * 10
+        FinPour
+    FinProc
+
+    Remplir(t, N)
+    Pour i <- 0 jusqua N - 1
+        Ecrire(t[i])
+    FinPour
+Fin

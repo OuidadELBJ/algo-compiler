@@ -1,0 +1,217 @@
+Algorithme TEST_COMPLET_TOUT
+Objets:
+    // ====== CONSTANTES + TABLEAUX + VARS GLOBALES ======
+    N : Constante entier = 5
+    M : Constante entier = 3
+
+    i : Variable entier
+    j : Variable entier
+    x : Variable entier
+    r : Variable réel
+    ok : Variable booléen
+    msg : Variable chaine
+
+    t : Tableau entier[N]
+    mat : Tableau entier[N][M]
+
+    p : Variable Personne
+    tabP : Tableau Personne[N]
+
+Début
+
+    // =====================================================================
+    // 1) DEFINITIONS (STRUCT + FONCTIONS + PROCEDURES) APRES "Début"
+    // =====================================================================
+
+    /* ---------- Structures imbriquées ---------- */
+    Structure Adresse
+        rue : chaine
+        ville : chaine
+        codePostal : entier
+    Fin-struct
+
+    Structure Personne
+        nom : chaine
+        age : entier
+        estEtudiant : booléen
+        adresse : Adresse
+    Fin-struct
+
+    // ---------- Fonction récursive (Factorielle) ----------
+    Fonction Factorielle(n : entier) : entier
+    Objets:
+        res : Variable entier
+    Début
+        Si n <= 1 Alors
+            Retourner 1
+        Sinon
+            res <- n * Factorielle(n - 1)
+            Retourner res
+        FinSi
+    FinFonct
+
+    // ---------- Fonction puissance ----------
+    Fonction Puissance(base : réel, exp : entier) : réel
+    Objets:
+        k : Variable entier
+        acc : Variable réel
+    Début
+        acc <- 1.0
+        Pour k <- 1 jusqua exp
+            acc <- acc * base
+        FinPour
+        Retourner acc
+    FinFonct
+
+    // ---------- Fonction PGCD (Euclide) ----------
+    Fonction PGCD(a : entier, b : entier) : entier
+    Objets:
+        tmp : Variable entier
+    Début
+        TantQue b <> 0
+            tmp <- b
+            b <- a Mod b
+            a <- tmp
+        FinTantQue
+        Retourner a
+    FinFonct
+
+    // ---------- Procédure qui remplit un tableau (param tableau) ----------
+    Procédure RemplirDouble(tin : Tableau entier[], taille : entier)
+    Objets:
+        k : Variable entier
+    Début
+        Pour k <- 0 jusqua taille - 1
+            tin[k] <- k * 2
+        FinPour
+    FinProc
+
+    // ---------- Procédure qui remplit une matrice ----------
+    Procédure RemplirMatrice(a : Tableau entier[][ ], n : entier, m : entier)
+    Objets:
+        ii : Variable entier
+        jj : Variable entier
+    Début
+        Pour ii <- 0 jusqua n - 1
+            Pour jj <- 0 jusqua m - 1
+                a[ii][jj] <- ii + jj
+            FinPour
+        FinPour
+    FinProc
+
+    // ---------- Procédure “demo” : Selon/Cas/Défaut + Sortir ----------
+    Procédure DemoSelon(val : entier)
+    Début
+        Selon val
+            Cas 0:
+                Ecrire("val=0")
+            Cas 1, 2:
+                Ecrire("val=1 ou 2")
+            Défaut:
+                Ecrire("val autre")
+        FinSelon
+    FinProc
+
+    // =====================================================================
+    // 2) MAIN : Tout tester
+    // =====================================================================
+
+    // ----- Commentaires + chaînes + concat (selon ton langage) -----
+    msg <- "Début du test complet"
+    Ecrire(msg)
+
+    // ----- Booléens + Non/Et/Ou + comparaisons -----
+    x <- 10
+    ok <- (x >= 10) Et Non(x <> 10) Ou Faux
+    Si ok Alors
+        Ecrire("OK: comparaisons + logique")
+    Sinon
+        Ecrire("KO")
+    FinSi
+
+    // ----- For + Quitter Pour -----
+    r <- 0.0
+    Pour i <- 0 jusqua N - 1
+        Si i = 3 Alors
+            Quitter Pour
+        FinSi
+        r <- r + i
+    FinPour
+    Ecrire("Somme partielle (avec Quitter Pour)=", r)
+
+    // ----- TantQue + Sortir -----
+    i <- 0
+    TantQue Vrai
+        i <- i + 1
+        Si i = 2 Alors
+            Sortir
+        FinSi
+    FinTantQue
+    Ecrire("i après Sortir=", i)
+
+    // ----- Répéter ... TantQue -----
+    j <- 0
+    Répéter
+        j <- j + 1
+    TantQue j < 3
+    Ecrire("j après Répéter=", j)
+
+    // ----- Tableaux 1D + index -----
+    RemplirDouble(t, N)
+    Ecrire("Tableau t:")
+    Pour i <- 0 jusqua N - 1
+        Ecrire("t[", i, "]=", t[i])
+    FinPour
+
+    // ----- Matrice 2D + double index -----
+    RemplirMatrice(mat, N, M)
+    Ecrire("Matrice mat:")
+    Pour i <- 0 jusqua N - 1
+        Pour j <- 0 jusqua M - 1
+            Ecrire("mat[", i, "][", j, "]=", mat[i][j])
+        FinPour
+    FinPour
+
+    // ----- Structures + accès champs + structures dans tableau -----
+    p.nom <- "Ali"
+    p.age <- 20
+    p.estEtudiant <- Vrai
+    p.adresse.rue <- "Rue 1"
+    p.adresse.ville <- "Casa"
+    p.adresse.codePostal <- 20000
+
+    Ecrire("Personne p: ", p.nom, " ", p.age, " ", p.estEtudiant)
+    Ecrire("Adresse: ", p.adresse.rue, " ", p.adresse.ville, " ", p.adresse.codePostal)
+
+    Pour i <- 0 jusqua N - 1
+        tabP[i].nom <- "P"
+        tabP[i].age <- 18 + i
+        tabP[i].estEtudiant <- (i Mod 2 = 0)
+        tabP[i].adresse.ville <- "Ville"
+        tabP[i].adresse.codePostal <- 10000 + i
+    FinPour
+
+    Ecrire("=== Etudiants dans tabP ===")
+    Pour i <- 0 jusqua N - 1
+        Si tabP[i].estEtudiant Alors
+            Ecrire("-> age=", tabP[i].age, " cp=", tabP[i].adresse.codePostal)
+        FinSi
+    FinPour
+
+    // ----- Appels de fonctions + opérateurs + priorité -----
+    Ecrire("Factorielle(5)=", Factorielle(5))
+    Ecrire("2^8=", Puissance(2.0, 8))
+    Ecrire("PGCD(48,18)=", PGCD(48, 18))
+
+    // ----- Selon/Cas/Défaut -----
+    DemoSelon(0)
+    DemoSelon(2)
+    DemoSelon(9)
+
+    // ----- Test expressions (priorité, parentheses, unary -) -----
+    x <- 2 + 3 * 4 - (5 + 1) * 2
+    Ecrire("x=", x)
+    x <- -x
+    Ecrire("x neg=", x)
+
+Fin

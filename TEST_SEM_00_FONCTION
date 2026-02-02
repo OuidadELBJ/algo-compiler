@@ -1,0 +1,12 @@
+Algorithme TEST_SEM_00_FONCTION
+Objets:
+    x : Variable entier
+Début
+    Fonction Carre(a : entier) : entier
+    Début
+        Retourner a * a
+    FinFonct
+
+    x <- Carre(5)
+    Ecrire("x=", x)
+Fin

@@ -1,0 +1,6 @@
+Algorithme TEST_SEM_ERR_TYPE
+Objets:
+    a : Variable entier
+Début
+    a <- "hello"
+Fin

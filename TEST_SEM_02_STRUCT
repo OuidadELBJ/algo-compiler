@@ -1,0 +1,20 @@
+Algorithme TEST_SEM_02_STRUCT
+Objets:
+    p : Variable Personne
+Début
+    Structure Adresse
+        ville : chaine
+        codePostal : entier
+    Fin-struct
+
+    Structure Personne
+        nom : chaine
+        adresse : Adresse
+    Fin-struct
+
+    p.nom <- "Ali"
+    p.adresse.ville <- "Casa"
+    p.adresse.codePostal <- 20000
+
+    Ecrire(p.nom, " ", p.adresse.ville, " ", p.adresse.codePostal)
+Fin

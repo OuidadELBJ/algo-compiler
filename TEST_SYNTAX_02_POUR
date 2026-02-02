@@ -1,0 +1,11 @@
+Algorithme TEST_SYNTAX_02_POUR
+Objets:
+    i : Variable entier
+    s : Variable entier
+Début
+    s <- 0
+    Pour i <- 0 jusqua 5 - 1
+        s <- s + i
+    FinPour
+    Ecrire("s=", s)
+Fin

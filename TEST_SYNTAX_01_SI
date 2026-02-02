@@ -1,0 +1,11 @@
+Algorithme TEST_SYNTAX_01_SI
+Objets:
+    x : Variable entier
+Début
+    x <- 10
+    Si x <> 0 Alors
+        Ecrire("non nul")
+    Sinon
+        Ecrire("nul")
+    FinSi
+Fin

@@ -1,0 +1,13 @@
+Algorithme TEST_SYNTAX_03_TANTQUE_SORTIR
+Objets:
+    i : Variable entier
+Début
+    i <- 0
+    TantQue Vrai
+        i <- i + 1
+        Si i = 3 Alors
+            Sortir
+        FinSi
+    FinTantQue
+    Ecrire("i=", i)
+Fin

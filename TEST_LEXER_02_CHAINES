@@ -1,0 +1,9 @@
+Algorithme TEST_LEXER_02_CHAINES
+Objets:
+    s : Variable chaine
+Début
+    s <- "Hello"
+    Ecrire("guillemets \"ok\"")
+    Ecrire("apostrophe \' ok")
+    Ecrire(s)
+Fin

@@ -1,0 +1,240 @@
+Algorithme TEST_COMPLET_TOUT_V2
+Objets:
+    // =========================
+    // GLOBALS : const / vars / arrays / structs
+    // =========================
+    N : Constante entier = 6
+    P : Constante entier = 4
+
+    a : Variable entier
+    b : Variable entier
+    i : Variable entier
+    j : Variable entier
+    k : Variable entier
+
+    rr : Variable réel
+    flag : Variable booléen
+    s : Variable chaine
+
+    vec : Tableau entier[N]
+    fib : Tableau entier[N]
+    grid : Tableau réel[N][P]
+
+    etu : Variable Etudiant
+    tabEtu : Tableau Etudiant[N]
+
+Début
+
+    // =========================================================
+    // 1) STRUCTURES
+    // =========================================================
+    Structure Note
+        ds : réel
+        exam : réel
+    Fin-struct
+
+    Structure Etudiant
+        nom : chaine
+        age : entier
+        note : Note
+        valide : booléen
+    Fin-struct
+
+    // =========================================================
+    // 2) FONCTIONS / PROCEDURES + Objets: LOCAL OPTIONNEL
+    // =========================================================
+
+    Fonction Max2(x : entier, y : entier) : entier
+    Début
+        Si x >= y Alors
+            Retourner x
+        Sinon
+            Retourner y
+        FinSi
+    FinFonct
+
+    Fonction SommeCarres(n : entier) : entier
+    Objets:
+        t : Variable entier
+        acc : Variable entier
+    Début
+        acc <- 0
+        Pour t <- 1 jusqua n
+            acc <- acc + t * t
+        FinPour
+        Retourner acc
+    FinFonct
+
+    Fonction EstPair(x : entier) : booléen
+    Début
+        Retourner (x Mod 2 = 0)
+    FinFonct
+
+    // Procédure: remplir un tableau via param Tableau entier[]
+    Procédure RemplirSuite(t : Tableau entier[], taille : entier)
+    Objets:
+        u : Variable entier
+    Début
+        Pour u <- 0 jusqua taille - 1
+            t[u] <- u + 10
+        FinPour
+    FinProc
+
+    // Procédure: Fibonacci dans un tableau passé en paramètre
+    Procédure Fibonacci(t : Tableau entier[], taille : entier)
+    Objets:
+        u : Variable entier
+    Début
+        Si taille >= 1 Alors
+            t[0] <- 0
+        FinSi
+        Si taille >= 2 Alors
+            t[1] <- 1
+        FinSi
+
+        Pour u <- 2 jusqua taille - 1
+            t[u] <- t[u - 1] + t[u - 2]
+        FinPour
+    FinProc
+
+    // Procédure: remplir une matrice réelle
+    Procédure RemplirGrid(g : Tableau réel[][], n : entier, m : entier)
+    Objets:
+        ii : Variable entier
+        jj : Variable entier
+    Début
+        Pour ii <- 0 jusqua n - 1
+            Pour jj <- 0 jusqua m - 1
+                g[ii][jj] <- (ii + 1) / (jj + 1)
+            FinPour
+        FinPour
+    FinProc
+
+    // Procédure: Démo Selon/Cas/Défaut + Sortir
+    Procédure DemoSelon2(x : entier)
+    Objets:
+        t : Variable entier
+    Début
+        t <- x Mod 5
+        Selon t
+            Cas 0:
+                Ecrire("mod5=0")
+            Cas 1:
+                Ecrire("mod5=1")
+            Cas 2, 3:
+                Ecrire("mod5=2 ou 3")
+            Défaut:
+                Ecrire("mod5=4")
+        FinSelon
+    FinProc
+
+    // =========================================================
+    // 3) MAIN TESTS (tout ensemble)
+    // =========================================================
+
+    // commentaires + chaînes
+    // ligne
+    /* bloc
+       multi-ligne */
+    s <- "TEST V2"
+    Ecrire(s)
+
+    // logique + Non/Et/Ou + comparaisons
+    a <- 7
+    b <- 9
+    flag <- (a < b) Et Non(a = b) Ou Faux
+    Si flag Alors
+        Ecrire("logique OK")
+    Sinon
+        Ecrire("logique KO")
+    FinSi
+
+    // appels de fonctions + priorité opérateurs + parenthèses
+    a <- Max2(12, 3) + 2 * 5
+    b <- (Max2(4, 8) - 1) * 2
+    Ecrire("a=", a, " b=", b)
+    Ecrire("SommeCarres(5)=", SommeCarres(5))
+    Ecrire("EstPair(10)=", EstPair(10))
+    Ecrire("EstPair(11)=", EstPair(11))
+
+    // Pour + Quitter Pour
+    rr <- 0.0
+    Pour i <- 0 jusqua N - 1
+        rr <- rr + i
+        Si i = 4 Alors
+            Quitter Pour
+        FinSi
+    FinPour
+    Ecrire("rr=", rr)
+
+    // TantQue + Sortir
+    i <- 0
+    TantQue Vrai
+        i <- i + 1
+        Si i = 3 Alors
+            Sortir
+        FinSi
+    FinTantQue
+    Ecrire("i après Sortir=", i)
+
+    // Répéter ... TantQue
+    k <- 0
+    Répéter
+        k <- k + 1
+    TantQue k < 2
+    Ecrire("k=", k)
+
+    // tableaux 1D via param
+    RemplirSuite(vec, N)
+    Fibonacci(fib, N)
+
+    Ecrire("vec:")
+    Pour i <- 0 jusqua N - 1
+        Ecrire(i, " -> ", vec[i])
+    FinPour
+
+    Ecrire("fib:")
+    Pour i <- 0 jusqua N - 1
+        Ecrire(i, " -> ", fib[i])
+    FinPour
+
+    // matrice 2D via param (tableau réel[][])
+    RemplirGrid(grid, N, P)
+    Ecrire("grid:")
+    Pour i <- 0 jusqua N - 1
+        Pour j <- 0 jusqua P - 1
+            Ecrire("g[", i, "][", j, "]=", grid[i][j])
+        FinPour
+    FinPour
+
+    // structures + champs + tableau de structures
+    etu.nom <- "Sara"
+    etu.age <- 21
+    etu.note.ds <- 14.5
+    etu.note.exam <- 12.0
+    etu.valide <- (etu.note.exam >= 10.0) Et (etu.note.ds >= 10.0)
+
+    Ecrire("etu: ", etu.nom, " age=", etu.age, " valide=", etu.valide)
+    Ecrire("notes: ", etu.note.ds, " / ", etu.note.exam)
+
+    Pour i <- 0 jusqua N - 1
+        tabEtu[i].nom <- "E"
+        tabEtu[i].age <- 18 + i
+        tabEtu[i].note.ds <- 10.0 + i
+        tabEtu[i].note.exam <- 9.0 + i
+        tabEtu[i].valide <- (tabEtu[i].note.exam >= 10.0)
+    FinPour
+
+    Ecrire("=== Validés ===")
+    Pour i <- 0 jusqua N - 1
+        Si tabEtu[i].valide Alors
+            Ecrire("age=", tabEtu[i].age, " exam=", tabEtu[i].note.exam)
+        FinSi
+    FinPour
+
+    // Selon/Cas/Défaut
+    DemoSelon2(11)
+    DemoSelon2(14)
+    DemoSelon2(19)
+
+Fin

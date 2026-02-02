@@ -1,0 +1,11 @@
+Algorithme TEST_SEM_ERR_ARITE
+Objets:
+    x : Variable entier
+Début
+    Fonction F(a : entier) : entier
+    Début
+        Retourner a
+    FinFonct
+
+    x <- F(1, 2)
+Fin

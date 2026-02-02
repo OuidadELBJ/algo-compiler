@@ -1,0 +1,7 @@
+Algorithme TEST_LEXER_00_BASIQUE
+Objets:
+    a : Variable entier
+Début
+    a <- 1
+    Ecrire(a)
+Fin
