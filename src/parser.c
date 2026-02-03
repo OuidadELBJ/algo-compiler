@@ -94,6 +94,7 @@ static bool is_return_terminator(Parser* p) {
 }
 
 
+// tatic pour encapsuler le parser et éviter toute utilisation externe.
 
 static ASTNode* parse_declaration(Parser* p);
 static ASTNode* parse_type(Parser* p);

@@ -610,6 +610,10 @@ static void ast_print_rec(ASTNode* n, int ind) {
                 ast_print_rec(n->as.if_stmt.else_block, ind+2);
             }
             break;
+        case AST_CALL_STMT:
+            printf("CALL_STMT\n");
+            ast_print_rec(n->as.call_stmt.call, ind+2);
+            break;
 
         case AST_WHILE:
             printf("WHILE\n");
